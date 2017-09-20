@@ -1,3 +1,5 @@
+<img width="200" height="200" src="icon.png">
+
 # UIAutomatorAdapter
 An adapter for UIAutomator app which can be execute many UI tests by config the XML file.
 
