@@ -48,6 +48,7 @@ The XML arch like as follows:
 * description(click object find by content-description);
 * delay
 * special: wakeup, pressHome, pressBack, stopApp, etc.  
+
 ```<value>*</value>```means the value of the type.
 
 
