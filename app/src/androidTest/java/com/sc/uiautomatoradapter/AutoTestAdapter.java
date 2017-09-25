@@ -159,6 +159,15 @@ public class AutoTestAdapter {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
+        } else if (special.contains("click")) {
+            String[] sArray = special.split(",");
+            int[] array = new int[sArray.length];
+            for(int i = 1; i < sArray.length; i++){
+                array[i] = Integer.parseInt(sArray[i]);
+            }
+            if (array.length == 3) {
+                mDevice.click(array[1], array[2]);
+            }
         }
     }
 

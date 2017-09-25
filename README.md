@@ -34,6 +34,10 @@ The XML arch like as follows:
 		</action>
 		<action>
 			<type>special</type>
+			<value>click,727,1010</value>
+		</action>
+		<action>
+			<type>special</type>
 			<value>stopApp</value>
 		</action>
 	</app>
@@ -47,7 +51,8 @@ The XML arch like as follows:
 * resource(click object find by resource-id);
 * description(click object find by content-description);
 * delay
-* special: wakeup, pressHome, pressBack, stopApp, etc.  
+* special: wakeup, pressHome, pressBack, stopApp, sleep, click with X/Y value, etc.     
+The example of ```click with X/Y value``` is ```click,100,200```. Use comma to separate values. 
 
 ```<value>*</value>```means the value of the type.
 
