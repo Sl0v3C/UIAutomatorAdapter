@@ -34,6 +34,7 @@ public class AutoTestAdapter {
     private XMLParser parser;
     static final String logTag = "[UIAutomatorAdapter]";
     private String appName;
+    private String result = null;
 
     // launch app by package name
     private boolean launchPackage(String app) {
@@ -88,7 +89,7 @@ public class AutoTestAdapter {
         launchPackage("com.sc.uiautomatoradapter");
 
         UiObject2 allow = mDevice.wait(Until.findObject(By.res(
-                "com.android.packageinstaller:id/permission_allow_button")), timeout);
+                "com.android.packageinstaller:id/permission_allow_button")), 2 * 1000);
         // click the allow button to grant the permission
         if (allow != null && allow.isClickable()) {
             allow.click();
@@ -133,7 +134,7 @@ public class AutoTestAdapter {
     }
 
     // Special cases like pressHome, wakeup, pressBack, stopApp, etc.
-    private void specialCase(String special) {
+    private void specialCase(String special) throws RemoteException, IOException {
         if (special.equals("stopApp")) {
             if (appName != null) {
                 stopApp(mDevice, appName);
@@ -143,23 +144,15 @@ public class AutoTestAdapter {
         } else if (special.equals("pressBack")) {
             mDevice.pressBack();
         } else if (special.equals("wakeUp")) {
-            try {
-                if (!mDevice.isScreenOn()) {
-                    mDevice.wakeUp();
-                    mDevice.swipe(mDevice.getDisplayWidth() / 2,
-                            mDevice.getDisplayHeight() - 100, mDevice.getDisplayWidth() / 2,
-                            mDevice.getDisplayHeight() / 2, 5);
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
+            if (!mDevice.isScreenOn()) {
+                mDevice.wakeUp();
+                mDevice.swipe(mDevice.getDisplayWidth() / 2,
+                        mDevice.getDisplayHeight() - 100, mDevice.getDisplayWidth() / 2,
+                        mDevice.getDisplayHeight() / 2, 5);
             }
         }  else if (special.equals("sleep")) {
-            try {
                 mDevice.sleep();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        } else if (special.contains("click")) {
+        } else if (special.contains("click,")) {
             String[] sArray = special.split(",");
             int[] array = new int[sArray.length];
             for(int i = 1; i < sArray.length; i++){
@@ -168,8 +161,20 @@ public class AutoTestAdapter {
             if (array.length == 3) {
                 mDevice.click(array[1], array[2]);
             }
+        } else if (special.contains("Shell,")) {
+            String[] sArray = special.split(",");
+            result = mDevice.executeShellCommand(sArray[1]);
+            Log.i(logTag, result);
+        } else if (special.contains("Compare,")) {
+            String[] sArray = special.split(",");
+            String compare = sArray[2];
+            if (result != null) {
+                if (result.contains(compare)) {
+                    logger.write(sArray[1] + " " + compare + " PASS");
+                }
+            }
         }
-    }
+     }
 
     // process the Action List
     private void processAction(String type, String value) {
@@ -182,7 +187,13 @@ public class AutoTestAdapter {
         } else if (type.equals("delay")) {
             delay(Integer.parseInt(value));
         } else if (type.equals("special")) {
-            specialCase(value);
+            try {
+                specialCase(value);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             Log.i(logTag, "Unsupported type: " + type + " value: " + value);
         }

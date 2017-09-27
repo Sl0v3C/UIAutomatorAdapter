@@ -10,6 +10,14 @@
 			<value>com.google.android.music:id/play_card</value>
 		</action>
 		<action>
+			<type>special</type>
+			<value>Shell,tinymix 59</value>
+		</action>
+		<action>
+			<type>special</type>
+			<value>Compare,Speaker Test,>On</value>
+		</action>
+		<action>
 			<type>delay</type>
 			<value>20000</value>
 		</action>
@@ -63,6 +71,14 @@
 		<action>
 			<type>delay</type>
 			<value>5000</value>
+		</action>
+		<action>
+			<type>special</type>
+			<value>click,727,1010</value>
+		</action>
+		<action>
+			<type>delay</type>
+			<value>2000</value>
 		</action>
 		<action>
 			<type>resource</type>

@@ -38,6 +38,14 @@ The XML arch like as follows:
 		</action>
 		<action>
 			<type>special</type>
+			<value>Shell,tinymix 59</value>
+		</action>
+		<action>
+			<type>special</type>
+			<value>Compare,Speaker Test,>On</value>
+		</action>
+		<action>
+			<type>special</type>
 			<value>stopApp</value>
 		</action>
 	</app>
@@ -51,8 +59,11 @@ The XML arch like as follows:
 * resource(click object find by resource-id);
 * description(click object find by content-description);
 * delay
-* special: wakeup, pressHome, pressBack, stopApp, sleep, click with X/Y value, etc.     
-The example of ```click with X/Y value``` is ```click,100,200```. Use comma to separate values. 
+* special: wakeup, pressHome, pressBack, stopApp, sleep, click with X/Y value,  Shell, Compare, etc.     
+The example of ```click with X/Y value``` is ```click,100,200```. Use comma to separate values.  
+```Shell,tinymix 59``` to execute shell command "tinymix 59".  
+```Compare,Speaker Test,>On``` means compare the shell return value with ">On".So ```Compare,Type,Value``` Type will add in logger, value is the String will be compared with the return value of the "Shell command".  
+**Compare** action should be follow **Shell** action when you need to judge the status right or not. 
 
 ```<value>*</value>```means the value of the type.
 
