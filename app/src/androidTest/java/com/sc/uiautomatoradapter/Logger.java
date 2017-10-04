@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class Logger {
     private final String LOGFILE  = Main.PATH + "log.txt";
-    private FileOutputStream mOut = null;
+    public FileOutputStream mOut = null;
 
     public void init() {
         try {

@@ -2,6 +2,7 @@ package com.sc.uiautomatoradapter;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.os.RemoteException;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SdkSuppress;
@@ -36,12 +37,42 @@ public class AutoTestAdapter {
     private String appName;
     private String result = null;
 
+    public AutoTestAdapter() {
+        // initialize the Logger instance
+        logger = new Logger();
+        logger.init();
+        // initialize the XMLParser instance
+        parser = new XMLParser();
+        parser.init();
+    }
+
+    private void preSteup() {
+        String appName, type, value;
+        if (parser.apps != null) {
+            App app = parser.apps.get(0);
+            appName = app.getName();
+            if (appName.equals("VirtualAppScreenOff")) {
+                if (app.actList != null) {
+                    for (Action action : app.actList) {
+                        type = action.getType();
+                        value = action.getValue();
+                        processAction(type, value);
+                    }
+                }
+                parser.apps.remove(0);
+            }
+        }
+    }
     // launch app by package name
     private boolean launchPackage(String app) {
         appName = app;
         PackageManager pm = InstrumentationRegistry.getContext().getPackageManager();
         Intent mBootUpIntent = pm.getLaunchIntentForPackage(app);
         if (mBootUpIntent == null) {
+            if (appName.equals("VirtualApp")) {
+                // use this appName to do something not related to any App
+                return true;
+            }
             Log.i(logTag, "Cannot get intent from app: " + app);
             return false;
         }
@@ -80,8 +111,11 @@ public class AutoTestAdapter {
         // wake up the device when screen is off
         if (!mDevice.isScreenOn()) {
             mDevice.wakeUp();
-            mDevice.swipe(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() - 100,
-                    mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 2, 5);
+            mDevice.swipe(mDevice.getDisplayWidth() / 2,
+                    mDevice.getDisplayHeight() - 100, mDevice.getDisplayWidth() / 2,
+                    mDevice.getDisplayHeight() / 2, 5);
+            delay(1000);
+            preSteup(); // do wakeup & maybe unlock gesture lock
         }
         // Start from the home screen
         mDevice.pressHome();
@@ -89,18 +123,18 @@ public class AutoTestAdapter {
         launchPackage("com.sc.uiautomatoradapter");
 
         UiObject2 allow = mDevice.wait(Until.findObject(By.res(
-                "com.android.packageinstaller:id/permission_allow_button")), 2 * 1000);
+                "com.android.packageinstaller:id/permission_allow_button")), timeout);
         // click the allow button to grant the permission
         if (allow != null && allow.isClickable()) {
             allow.click();
             delay(5000);
         }
-        // initialize the Logger instance
-        logger = new Logger();
-        logger.init();
-        // initialize the XMLParser instance
-        parser = new XMLParser();
-        parser.init();
+        if (logger.mOut == null || parser.apps == null) {
+            // initialize the Logger instance
+            logger.init();
+            // initialize the XMLParser instance
+            parser.init();
+        }
     }
 
     // Click the object find by Text
@@ -135,24 +169,25 @@ public class AutoTestAdapter {
 
     // Special cases like pressHome, wakeup, pressBack, stopApp, etc.
     private void specialCase(String special) throws RemoteException, IOException {
-        if (special.equals("stopApp")) {
+        if (special.equals("stopApp")) { // force stop the current app
             if (appName != null) {
                 stopApp(mDevice, appName);
             }
-        } else if (special.equals("pressHome")) {
+        } else if (special.equals("pressHome")) { // do press Home button
             mDevice.pressHome();
-        } else if (special.equals("pressBack")) {
+        } else if (special.equals("pressBack")) { // do press Back button
             mDevice.pressBack();
-        } else if (special.equals("wakeUp")) {
+        } else if (special.equals("wakeUp")) { // do wakeup feature
             if (!mDevice.isScreenOn()) {
                 mDevice.wakeUp();
                 mDevice.swipe(mDevice.getDisplayWidth() / 2,
                         mDevice.getDisplayHeight() - 100, mDevice.getDisplayWidth() / 2,
                         mDevice.getDisplayHeight() / 2, 5);
+                delay(1000);
             }
-        }  else if (special.equals("sleep")) {
+        }  else if (special.equals("sleep")) { // do sleep feature
                 mDevice.sleep();
-        } else if (special.contains("click,")) {
+        } else if (special.contains("click,")) { // process click action
             String[] sArray = special.split(",");
             int[] array = new int[sArray.length];
             for(int i = 1; i < sArray.length; i++){
@@ -161,11 +196,12 @@ public class AutoTestAdapter {
             if (array.length == 3) {
                 mDevice.click(array[1], array[2]);
             }
-        } else if (special.contains("Shell,")) {
+        } else if (special.contains("Shell,")) { // process Shell command action
             String[] sArray = special.split(",");
             result = mDevice.executeShellCommand(sArray[1]);
             Log.i(logTag, result);
         } else if (special.contains("Compare,")) {
+            // compare the result of last shell command return
             String[] sArray = special.split(",");
             String compare = sArray[2];
             if (result != null) {
@@ -173,6 +209,25 @@ public class AutoTestAdapter {
                     logger.write(sArray[1] + " " + compare + " PASS");
                 }
             }
+        } else if (special.contains("Swipe")) { // process swipe action
+            String[] sArray = special.split(",");
+            int steps = 40; // default steps
+            int length = sArray.length;
+            if (special.contains("Steps")) {
+                steps = Integer.parseInt(sArray[length - 1]);
+            }
+            int[] array = new int[length - 3];
+            for(int i = 0; i < length - 3; i++){
+                array[i] = Integer.parseInt(sArray[i + 1]);
+            }
+            length = array.length;
+
+            Point[] p = new Point[length / 2];
+            for (int i = 0; i < length; i += 2) {
+                Point temp = new Point(array[i], array[i + 1]);
+                p[i / 2] = temp;
+            }
+            mDevice.swipe(p, steps);
         }
      }
 

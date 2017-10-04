@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>  
 <apps>
 	<app>
-		<name>App Not exist</name>
+		<name>VirtualAppScreenOff</name>
+		<action>
+			<type>special</type>
+			<value>Swipe,533,1244,282,1493,526,1713,791,1452,541,1518,285,1228,Steps,20</value>
+		</action>
 	</app>
 	<app>
 		<name>com.google.android.music</name>
@@ -28,6 +32,13 @@
 		<action>
 			<type>special</type>
 			<value>stopApp</value>
+		</action>
+	</app>
+	<app>
+		<name>VirtualApp</name>
+		<action>
+			<type>special</type>
+			<value>click,727,1010</value>
 		</action>
 	</app>
 	<app>

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class XMLParser {
     private final String XML  = Main.PATH + Main.XMLName;
-    public List<App> apps;
+    public List<App> apps = null;
 
     public void init() {
         try {
