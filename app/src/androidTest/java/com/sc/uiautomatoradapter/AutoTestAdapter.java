@@ -1,6 +1,7 @@
 package com.sc.uiautomatoradapter;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.RemoteException;
@@ -19,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.List;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
@@ -46,7 +48,7 @@ public class AutoTestAdapter {
         parser.init();
     }
 
-    private void preSteup() {
+    private void preSetup() {
         String appName, type, value;
         if (parser.apps != null) {
             App app = parser.apps.get(0);
@@ -63,13 +65,24 @@ public class AutoTestAdapter {
             }
         }
     }
+    
     // launch app by package name
     private boolean launchPackage(String app) {
-        appName = app;
         PackageManager pm = InstrumentationRegistry.getContext().getPackageManager();
+        List<PackageInfo> packages = pm.getInstalledPackages(0);
+        for (int i = 0;i < packages.size();i++) {
+            PackageInfo packageInfo = packages.get(i);
+            appName = packageInfo.applicationInfo.loadLabel(pm).toString();
+            String packageName = packageInfo.packageName;
+            if (appName.equals(app)) {
+                app = packageName;
+                break;
+            }
+        }
+
         Intent mBootUpIntent = pm.getLaunchIntentForPackage(app);
         if (mBootUpIntent == null) {
-            if (appName.equals("VirtualApp")) {
+            if (app.equals("VirtualApp")) {
                 // use this appName to do something not related to any App
                 return true;
             }
@@ -105,9 +118,10 @@ public class AutoTestAdapter {
     }
 
     @Before
-    public void setUp() throws IOException, RemoteException {
+    public void setUp() throws RemoteException {
         // Initialize UiDevice instance
         mDevice = UiDevice.getInstance(getInstrumentation());
+        
         // wake up the device when screen is off
         if (!mDevice.isScreenOn()) {
             mDevice.wakeUp();
@@ -115,10 +129,12 @@ public class AutoTestAdapter {
                     mDevice.getDisplayHeight() - 100, mDevice.getDisplayWidth() / 2,
                     mDevice.getDisplayHeight() / 2, 5);
             delay(1000);
-            preSteup(); // do wakeup & maybe unlock gesture lock
+            preSetup(); // do wakeup & maybe unlock gesture lock
         }
+        
         // Start from the home screen
         mDevice.pressHome();
+        
         // launch "com.sc.uiautomatoradapter" to grant the permission and copy XML file to SDCARD
         launchPackage("com.sc.uiautomatoradapter");
 
@@ -129,6 +145,7 @@ public class AutoTestAdapter {
             allow.click();
             delay(5000);
         }
+        
         if (logger.mOut == null || parser.apps == null) {
             // initialize the Logger instance
             logger.init();
@@ -138,7 +155,7 @@ public class AutoTestAdapter {
     }
 
     // Click the object find by Text
-    private void clickUiobjectByText(String text) {
+    private void clickUIObjectByText(String text) {
         UiObject2 t = mDevice.wait(Until.findObject(By.text(text)), timeout);
         if (t != null) {
             t.click();
@@ -148,7 +165,7 @@ public class AutoTestAdapter {
     }
 
     // Click the object find by Resource-id
-    private void clickUiobjectByRes(String res) {
+    private void clickUIObjectByRes(String res) {
         UiObject2 r = mDevice.wait(Until.findObject(By.res(res)), timeout);
         if (r != null) {
             r.click();
@@ -158,7 +175,7 @@ public class AutoTestAdapter {
     }
 
     // Click the object find by Content-description
-    private void clickUiobjectByDes(String desc) {
+    private void clickUIObjectByDes(String desc) {
         UiObject2 d = mDevice.wait(Until.findObject(By.desc(desc)), timeout);
         if (d != null) {
             d.click();
@@ -234,11 +251,11 @@ public class AutoTestAdapter {
     // process the Action List
     private void processAction(String type, String value) {
         if (type.equals("text")) {
-            clickUiobjectByText(value);
+            clickUIObjectByText(value);
         } else if (type.equals("resource")) {
-            clickUiobjectByRes(value);
+            clickUIObjectByRes(value);
         } else if (type.equals("description")) {
-            clickUiobjectByDes(value);
+            clickUIObjectByDes(value);
         } else if (type.equals("delay")) {
             delay(Integer.parseInt(value));
         } else if (type.equals("special")) {
@@ -256,7 +273,7 @@ public class AutoTestAdapter {
 
     // the test entrance
     @Test
-    public void allTests() throws IOException, UiObjectNotFoundException, InterruptedException {
+    public void allTests() {
         String appName, type, value;
         if (parser.apps != null) {
             for (App app : parser.apps) {

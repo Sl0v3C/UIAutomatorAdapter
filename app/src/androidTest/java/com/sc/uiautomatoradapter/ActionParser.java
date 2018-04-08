@@ -8,5 +8,5 @@ import java.util.List;
  */
 
 public interface ActionParser {
-    public List<App> parse(InputStream is) throws Exception;
+    List<App> parse(InputStream is) throws Exception;
 }

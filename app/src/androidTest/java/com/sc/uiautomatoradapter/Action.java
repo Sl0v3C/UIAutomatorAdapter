@@ -35,8 +35,9 @@ public class Action {
     private int[] getArray(String string) {
         String[] sArray = string.split(",");
         int[] array = new int[sArray.length];
-        for(int i = 0; i < sArray.length; i++){
-            array[i] = Integer.parseInt(sArray[i]);
+        int i = 0;
+        for (String element : sArray) {
+            array[i++] = Integer.parseInt(element);
         }
         return array;
     }
