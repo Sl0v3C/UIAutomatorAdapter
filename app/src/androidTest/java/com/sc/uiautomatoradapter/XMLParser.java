@@ -35,4 +35,13 @@ public class XMLParser {
             e.printStackTrace();
         }
     }
+
+    public boolean isFileExist() {
+        File desDir = new File(Main.PATH);
+        if (!desDir.exists()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

@@ -16,6 +16,7 @@ import android.support.test.uiautomator.Until;
 import android.util.Log;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -65,9 +66,8 @@ public class AutoTestAdapter {
             }
         }
     }
-    
-    // launch app by package name
-    private boolean launchPackage(String app) {
+
+    private String getPacakgeName(String app) {
         PackageManager pm = InstrumentationRegistry.getContext().getPackageManager();
         List<PackageInfo> packages = pm.getInstalledPackages(0);
         for (int i = 0;i < packages.size();i++) {
@@ -75,12 +75,18 @@ public class AutoTestAdapter {
             appName = packageInfo.applicationInfo.loadLabel(pm).toString();
             String packageName = packageInfo.packageName;
             if (appName.equals(app)) {
-                app = packageName;
-                break;
+                return packageName;
             }
         }
+        return "";
+    }
 
-        Intent mBootUpIntent = pm.getLaunchIntentForPackage(app);
+    // launch app by package name
+    private boolean launchPackage(String app) {
+        PackageManager pm = InstrumentationRegistry.getContext().getPackageManager();
+        String packageName = getPacakgeName(app);
+
+        Intent mBootUpIntent = pm.getLaunchIntentForPackage(packageName);
         if (mBootUpIntent == null) {
             if (app.equals("VirtualApp")) {
                 // use this appName to do something not related to any App
@@ -131,26 +137,42 @@ public class AutoTestAdapter {
             delay(1000);
             preSetup(); // do wakeup & maybe unlock gesture lock
         }
-        
-        // Start from the home screen
-        mDevice.pressHome();
-        
-        // launch "com.sc.uiautomatoradapter" to grant the permission and copy XML file to SDCARD
-        launchPackage("com.sc.uiautomatoradapter");
 
-        UiObject2 allow = mDevice.wait(Until.findObject(By.res(
-                "com.android.packageinstaller:id/permission_allow_button")), timeout);
-        // click the allow button to grant the permission
-        if (allow != null && allow.isClickable()) {
-            allow.click();
-            delay(5000);
-        }
-        
-        if (logger.mOut == null || parser.apps == null) {
-            // initialize the Logger instance
-            logger.init();
-            // initialize the XMLParser instance
-            parser.init();
+        if (parser.isFileExist()) {
+            String name = mDevice.getCurrentPackageName();
+
+            System.out.println("PYY" + name);
+            if (parser.apps != null) {
+                for (App app : parser.apps) {
+                    appName = app.getName();
+                    String packageName = getPacakgeName(app.getName());
+                    if (!packageName.equals(name)) {
+                        launchPackage(appName);
+                    }
+                    System.out.println("PYY" + appName);
+                }
+            }
+        } else {
+            // Start from the home screen
+            mDevice.pressHome();
+
+            // launch "com.sc.uiautomatoradapter" to grant the permission and copy XML file to SDCARD
+            launchPackage("UIAutomatorAdapter");
+
+            UiObject2 allow = mDevice.wait(Until.findObject(By.res(
+                    "com.android.packageinstaller:id/permission_allow_button")), timeout);
+            // click the allow button to grant the permission
+            if (allow != null && allow.isClickable()) {
+                allow.click();
+                delay(5000);
+            }
+
+            if (logger.mOut == null || parser.apps == null) {
+                // initialize the Logger instance
+                logger.init();
+                // initialize the XMLParser instance
+                parser.init();
+            }
         }
     }
 
@@ -274,17 +296,20 @@ public class AutoTestAdapter {
     // the test entrance
     @Test
     public void allTests() {
-        String appName, type, value;
+        String appName, packageName, type, value;
+        mDevice = UiDevice.getInstance(getInstrumentation());
         if (parser.apps != null) {
             for (App app : parser.apps) {
                 appName = app.getName();
-                if (launchPackage(appName)) {
-                    if (app.actList != null) {
-                        for (Action action : app.actList) {
-                            type = action.getType();
-                            value = action.getValue();
-                            processAction(type, value);
-                        }
+                packageName = getPacakgeName(appName);
+                if (!packageName.equals(mDevice.getCurrentPackageName())) {
+                    launchPackage(appName);
+                }
+                if (app.actList != null) {
+                    for (Action action : app.actList) {
+                        type = action.getType();
+                        value = action.getValue();
+                        processAction(type, value);
                     }
                 }
             }
