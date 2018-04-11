@@ -11,12 +11,16 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject2;
-import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
 import android.util.Log;
 
+import com.sc.uiautomatoradapter.action.Action;
+import com.sc.uiautomatoradapter.action.PreAction;
+import com.sc.uiautomatoradapter.app.App;
+import com.sc.uiautomatoradapter.logger.Logger;
+import com.sc.uiautomatoradapter.parser.XMLParser;
+
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -141,15 +145,19 @@ public class AutoTestAdapter {
         if (parser.isFileExist()) {
             String name = mDevice.getCurrentPackageName();
 
-            System.out.println("PYY" + name);
             if (parser.apps != null) {
                 for (App app : parser.apps) {
                     appName = app.getName();
                     String packageName = getPacakgeName(app.getName());
                     if (!packageName.equals(name)) {
                         launchPackage(appName);
+                        String preType, preValue;
+                        for (PreAction preAction : app.preActList) {
+                            preType = preAction.getType();
+                            preValue = preAction.getValue();
+                            processAction(preType, preValue);
+                        }
                     }
-                    System.out.println("PYY" + appName);
                 }
             }
         } else {

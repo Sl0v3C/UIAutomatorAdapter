@@ -1,4 +1,9 @@
-package com.sc.uiautomatoradapter;
+package com.sc.uiautomatoradapter.parser;
+
+import com.sc.uiautomatoradapter.action.Action;
+import com.sc.uiautomatoradapter.action.ActionParser;
+import com.sc.uiautomatoradapter.action.PreAction;
+import com.sc.uiautomatoradapter.app.App;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -35,6 +40,7 @@ public class SaxActionParser implements ActionParser {
         private List<App> apps;
         private App app;
         private Action action;
+        private PreAction preAction;
         private StringBuilder builder;
 
         // return the List of App instances
@@ -55,9 +61,12 @@ public class SaxActionParser implements ActionParser {
             super.startElement(uri, localName, qName, attributes);
             if (localName.equals("app")) {
                 app = new App();
-                app.actList = new ArrayList<Action>();
+                app.actList = new ArrayList<>();
+                app.preActList = new ArrayList<>();
             } else if (localName.equals("action")) {
                 action = new Action();
+            } else if (localName.equals("pre_action")) {
+                preAction = new PreAction();
             }
             // set length to 0 to re-read the characters of the element
             builder.setLength(0);
@@ -81,6 +90,12 @@ public class SaxActionParser implements ActionParser {
                 action.setValue(builder.toString());
             } else if (localName.equals("action") && app != null) {
                 app.actList.add(action);
+            } else if (localName.equals("pre_type")) {
+                preAction.setType(builder.toString());
+            }  else if (localName.equals("pre_value")) {
+                preAction.setValue(builder.toString());
+            } else if (localName.equals("pre_action") && app != null) {
+                app.preActList.add(preAction);
             } else if (localName.equals("app")) {
                 apps.add(app);
             }

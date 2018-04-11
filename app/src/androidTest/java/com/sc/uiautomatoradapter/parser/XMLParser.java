@@ -1,6 +1,11 @@
-package com.sc.uiautomatoradapter;
+package com.sc.uiautomatoradapter.parser;
 
+import android.os.Environment;
 import android.util.Log;
+
+import com.sc.uiautomatoradapter.AutoTestAdapter;
+import com.sc.uiautomatoradapter.Main;
+import com.sc.uiautomatoradapter.app.App;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,15 +17,20 @@ import java.util.List;
  * Created by pyy on 2017/9/19.
  */
 
+
 public class XMLParser {
-    private final String XML  = Main.PATH + Main.XMLName;
+    private final String PATH =  Environment.getExternalStorageDirectory().getAbsolutePath()
+            + "/UIAutoAdapt/";
+    private final String XMLName = "AutoUIConfig.xml";
+    private final String XML  = PATH + XMLName;
+    private final String logTag = "[UIAutomatorAdapter]";
     public List<App> apps = null;
 
     public void init() {
         try {
-            File desDir = new File(Main.PATH);
+            File desDir = new File(PATH);
             if (!desDir.exists()) {
-                Log.e(AutoTestAdapter.logTag, "No folder existed: " + Main.PATH);
+                Log.e(logTag, "No folder existed: " + PATH);
                 throw new IOException();
             }
 
@@ -37,7 +47,7 @@ public class XMLParser {
     }
 
     public boolean isFileExist() {
-        File desDir = new File(Main.PATH);
+        File desDir = new File(PATH);
         if (!desDir.exists()) {
             return false;
         } else {

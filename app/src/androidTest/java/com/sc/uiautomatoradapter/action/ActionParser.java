@@ -1,4 +1,6 @@
-package com.sc.uiautomatoradapter;
+package com.sc.uiautomatoradapter.action;
+
+import com.sc.uiautomatoradapter.app.App;
 
 import java.io.InputStream;
 import java.util.List;

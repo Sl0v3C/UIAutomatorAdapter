@@ -79,7 +79,6 @@ public class Main extends Activity {
             e.printStackTrace();
         }
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {

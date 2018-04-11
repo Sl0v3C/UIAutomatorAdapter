@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<apps>
+	<app>
+		<name>王者荣耀</name>
+		<pre_action> <!-- 等待显示登录界面 -->
+			<pre_type>delay</pre_type>
+			<pre_value>20000</pre_value>
+		</pre_action>
+		<pre_action> <!-- 登录 -->
+			<pre_type>special</pre_type>
+			<pre_value>click,1454,1190</pre_value>
+		</pre_action>
+		<pre_action> <!-- 等待显示游戏界面 -->
+			<pre_type>delay</pre_type>
+			<pre_value>8000</pre_value>
+		</pre_action>
+		<pre_action> <!-- 关闭消息 -->
+			<pre_type>special</pre_type>
+			<pre_value>click,2298,241</pre_value>
+		</pre_action>
+		<pre_action>
+			<pre_type>delay</pre_type>
+			<pre_value>2000</pre_value>
+		</pre_action>
+		<pre_action> <!-- 关闭消息 -->
+			<pre_type>special</pre_type>
+			<pre_value>click,2298,241</pre_value>
+		</pre_action>
+		<pre_action>
+			<pre_type>delay</pre_type>
+			<pre_value>2000</pre_value>
+		</pre_action>
+		<pre_action> <!-- 关闭消息 -->
+			<pre_type>special</pre_type>
+			<pre_value>click,2298,241</pre_value>
+		</pre_action>
+		<pre_action>
+			<pre_type>delay</pre_type>
+			<pre_value>2000</pre_value>
+		</pre_action>
+		<pre_action> <!-- 关闭消息 -->
+			<pre_type>special</pre_type>
+			<pre_value>click,2215,275</pre_value>
+		</pre_action>
+		<pre_action>
+			<pre_type>delay</pre_type>
+			<pre_value>2000</pre_value>
+		</pre_action>
+		<pre_action> <!-- 关闭消息 -->
+			<pre_type>special</pre_type>
+			<pre_value>click,2345,298</pre_value>
+		</pre_action>
+		<pre_action> 
+			<pre_type>delay</pre_type>
+			<pre_value>2000</pre_value>
+		</pre_action>
+		<pre_action> <!-- 关闭消息 -->
+			<pre_type>special</pre_type>
+			<pre_value>click,2381,201</pre_value>
+		</pre_action>
+		<pre_action>
+			<pre_type>delay</pre_type>
+			<pre_value>2000</pre_value>
+		</pre_action>
+		<action> <!-- 进入冒险模式 -->
+			<type>special</type>
+			<value>click,2379,955</value>
+		</action>
+		<action>
+			<type>delay</type>
+			<value>1000</value>
+		</action>
+		<action> <!-- 挑战陨落的废都 -->
+			<type>special</type>
+			<value>click,1423,1119</value>
+		</action>
+		<action>
+			<type>delay</type>
+			<value>1000</value>
+		</action>
+		<action> <!-- 下一步 -->
+			<type>special</type>
+			<value>click,2329,1314</value>
+		</action>
+		<action>
+			<type>delay</type>
+			<value>3000</value>
+		</action>
+		<action> <!-- 闯关 -->
+			<type>special</type>
+			<value>click,2130,1236</value>
+		</action>
+		<action>
+			<type>delay</type>
+			<value>20000</value>
+		</action>
+		<action> <!-- 自动 -->
+			<type>special</type>
+			<value>click,2777,101</value>
+		</action>
+		<action>
+			<type>delay</type>
+			<value>70000</value>
+		</action>
+		<action> <!-- 跳过 -->
+			<type>special</type>
+			<value>click,1234,1318</value>
+		</action>
+		<action>
+			<type>delay</type>
+			<value>4000</value>
+		</action>
+		<action> <!-- 跳过 -->
+			<type>special</type>
+			<value>click,1234,1318</value>
+		</action>
+		<action>
+			<type>delay</type>
+			<value>2000</value>
+		</action>
+		<action> <!-- 再次挑战 -->
+			<type>special</type>
+			<value>click,2489,1318</value>
+		</action>
+		<action>
+			<type>delay</type>
+			<value>2000</value>
+		</action>
+	</app>
+</apps>

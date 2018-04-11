@@ -1,13 +1,8 @@
-package com.sc.uiautomatoradapter;
+package com.sc.uiautomatoradapter.action;
 
 import android.graphics.Point;
 
-/**
- * Created by pyy on 2017/9/19.
- */
-
-
-public class Action {
+public class PreAction {
     private String type;    // action type
     private String value;   // action value
 
@@ -63,6 +58,4 @@ public class Action {
             dragP[i / 2] = temp;
         }
     }
-
 }
-

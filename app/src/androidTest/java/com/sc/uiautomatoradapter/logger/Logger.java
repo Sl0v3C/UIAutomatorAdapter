@@ -1,4 +1,6 @@
-package com.sc.uiautomatoradapter;
+package com.sc.uiautomatoradapter.logger;
+
+import android.os.Environment;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -8,8 +10,11 @@ import java.io.IOException;
  * Created by pyy on 2017/9/19.
  */
 
+
 public class Logger {
-    private final String LOGFILE  = Main.PATH + "log.txt";
+    private final String PATH =  Environment.getExternalStorageDirectory().getAbsolutePath()
+            + "/UIAutoAdapt/";
+    private final String LOGFILE  = PATH + "log.txt";
     public FileOutputStream mOut = null;
 
     public void init() {

@@ -1,4 +1,7 @@
-package com.sc.uiautomatoradapter;
+package com.sc.uiautomatoradapter.app;
+
+import com.sc.uiautomatoradapter.action.PreAction;
+import com.sc.uiautomatoradapter.action.Action;
 
 import java.util.List;
 
@@ -9,6 +12,7 @@ import java.util.List;
 public class App {
     private String name;            // app name, used by launchPackage
     public List<Action> actList;    // action list
+    public List<PreAction> preActList;    // action list
 
     // get the app name
     public String getName() {
