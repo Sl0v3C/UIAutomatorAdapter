@@ -66,7 +66,7 @@ The XML arch like as follows:
 **VirtualApp** is a virtual app name which can do something without launch any app.  
 **VirtualAppScreenOff** do something screen off without launch any app.
 
-```<name>*</name>```stands for the package name of the app we want to launch. e.g.: 计算器 or Calculator or the some name else.
+```<name>*</name>```stands for the package name of the app we want to launch. e.g.: 计算器 or Calculator or the some name else.  
 ```<action>*</action>```stands for the action we want to do.  
 ```<type>*</type>```means the action type, now supports:
 * text(click object find by text);
